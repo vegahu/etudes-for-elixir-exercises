@@ -49,7 +49,7 @@ calculate it. If your argument name is +estimate+, you would do something like t
 
   def nth_root(x, n) when is_integer(n), do: nth_root(x, n, x / 2)
 
-  def nth_root(x, n, a) do
+  defp nth_root(x, n, a) do
     f = raise(a, n) - x
     f_prime = n * raise(a, n - 1)
     next = a - f / f_prime
