@@ -1,7 +1,5 @@
 defmodule AskArea do
 
-import Geom
-
 @doc """
 char_to_shape/1+::
   Given a character parameter (+R+, +T+, or +E+ in either upper or lower case),
@@ -34,9 +32,17 @@ char_to_shape/1+::
   @spec get_number(String.t()) :: number()
 
   def get_number(prompt) do
-    IO.gets("Enter #{prompt}> ")
-    |> String.strip
-    |> String.to_integer
+    input = IO.gets("Enter #{prompt} > ")
+    input_str = String.strip(input)
+    pattern_int = ~r/^[+-]?\d+$/
+    pattern_float = ~r/^[+-]?\d+\.\d+([eE][+-]?\d+)?$/
+    cond do
+      Regex.match?(pattern_int, input_str) ->
+        String.to_integer(input_str)
+      Regex.match?(pattern_float, input_str) ->
+        String.to_float(input_str)
+      true -> :error
+    end
   end
 
   @doc """
@@ -63,9 +69,9 @@ char_to_shape/1+::
 
   @spec calculate(atom(), number(), number()) :: number()
 
-  def calculate(shape, dim1, dim2) when (shape == :unknown), do: IO.puts("Unknown shape #{shape}")
-  def calculate(shape, dim1, dim2) when  not is_number(dim1) and not is_number(dim2), do: IO.puts("Dimensions are not numeric")
-  def calculate(shape, dim1, dim2) when  dim1 < 0 and dim2 < 0, do: IO.puts("Dimensions must be greater than 0")
+  def calculate(shape, _dim1, _dim2) when (shape == :unknown), do: IO.puts("Unknown shape #{shape}")
+  def calculate(_shape, dim1, dim2) when  not is_number(dim1) and not is_number(dim2), do: IO.puts("Dimensions are not numeric")
+  def calculate(_shape, dim1, dim2) when  dim1 < 0 and dim2 < 0, do: IO.puts("Dimensions must be greater than 0")
   def calculate(shape, dim1, dim2), do: Geom.area(shape, dim1, dim2)
 
 
